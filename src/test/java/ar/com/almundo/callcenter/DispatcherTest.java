@@ -1,38 +1,47 @@
 package ar.com.almundo.callcenter;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import ar.com.almundo.callcenter.call.Call;
+import ar.com.almundo.callcenter.employees.EmployeePool;
+import ar.com.almundo.callcenter.employees.Operator;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/**
- * Unit test for simple App.
- */
-public class DispatcherTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public DispatcherTest( String testName )
-    {
-        super( testName );
-    }
+public class DispatcherTest extends TestCase {
+	
+	public DispatcherTest(String testName) {
+		super(testName);
+	}
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( DispatcherTest.class );
-    }
+	public static Test suite() {
+		return new TestSuite(DispatcherTest.class);
+	}
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+	public void testSingleCallDispatch() {
+
+		final Call call = new Call();
+		
+		EmployeePool.getInstance().addEmployee(new Operator(1l, "Ricardo Rojas"));
+		
+		new Dispatcher().dispatchCall(call);
+		
+		assertEquals(0, EmployeePool.getInstance().getEmployeeCount());
+		
+		Timer timer = new Timer();
+		
+		timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				
+				call.end();
+				assertEquals(1, EmployeePool.getInstance().getEmployeeCount());
+			}
+			
+		}, 5000);
+	
+	}
 }
