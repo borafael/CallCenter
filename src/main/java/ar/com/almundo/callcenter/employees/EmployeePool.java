@@ -40,6 +40,18 @@ public class EmployeePool {
 		
 		return employee;
 	}
+	
+	public List<Employee> getEmployees(Class<? extends Employee> employeeClass) {
+		
+		List<Employee> employees = new ArrayList<Employee>();
+		
+		if(this.employees.containsKey(employeeClass)){
+			
+			employees.addAll(this.employees.get(employeeClass));
+		}
+		
+		return employees;
+	}
 
 	public Operator getOperator() {
 		return (Operator)getEmployee(Operator.class);
@@ -51,5 +63,21 @@ public class EmployeePool {
 	
 	public Director getDirector() {
 		return (Director)getEmployee(Director.class);
+	}
+	
+	public int getOperatorCount() {
+		return getEmployees(Operator.class).size();
+	}
+	
+	public int getSupervisorCount() {
+		return getEmployees(Supervisor.class).size();
+	}
+	
+	public int getDirectorCount() {
+		return getEmployees(Director.class).size();
+	}
+	
+	public int getEmployeeCount() {
+		return getOperatorCount() + getSupervisorCount() + getDirectorCount();
 	}
 }
