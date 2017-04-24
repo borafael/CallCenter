@@ -1,6 +1,6 @@
 package ar.com.almundo.callcenter.employees;
 
-import ar.com.almundo.callcenter.Call;
+import ar.com.almundo.callcenter.call.Call;
 
 public abstract class Employee {
 	
@@ -12,7 +12,11 @@ public abstract class Employee {
 		this.name = name;
 	}
 
-	public abstract void atender(Call llamada);
+	public void handleCall(Call call) {
+
+		System.out.println(String.format("%s %s speaking...", getClass().getSimpleName().toLowerCase(), name));
+		call.handle(this);
+	}
 	
 	@Override
 	public boolean equals(Object object) {
