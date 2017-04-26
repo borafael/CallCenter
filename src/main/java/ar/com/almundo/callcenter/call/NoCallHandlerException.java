@@ -1,5 +1,5 @@
 package ar.com.almundo.callcenter.call;
 
-public class NoCallHandlerException extends RuntimeException {
+public class NoCallHandlerException extends CallHandlingException {
 
 }
