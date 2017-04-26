@@ -15,6 +15,10 @@ public class EmployeePool {
 		employees = new ConcurrentHashMap<Class<? extends Employee>, List<Employee>>();
 	}
 	
+	public void empty() {
+		employees.clear();
+	}
+	
 	public void addEmployee(Employee employee) {
 		
 		if(!employees.containsKey(employee.getClass())){
