@@ -40,7 +40,7 @@ public class CallCenterTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		
-		EmployeePool.getInstance().empty();
+		EmployeePool.getInstance().reset();
 		
 		List<Employee> employees = new LinkedList<Employee>();
 		
