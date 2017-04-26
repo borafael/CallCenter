@@ -39,7 +39,6 @@ public class DispatcherTest extends TestCase {
 		
 		EmployeePool.getInstance().empty();
 		Dispatcher.getInstance().setHoldHandler(null);
-
 	}
 
 	public static Test suite() {
@@ -75,7 +74,7 @@ public class DispatcherTest extends TestCase {
 		
 		Thread[] threads = new Thread[employees.size()];
 		
-		for(int threadIndex = 0; threadIndex < 10; threadIndex++) {
+		for(int threadIndex = 0; threadIndex < employees.size(); threadIndex++) {
 			threads[threadIndex] = new TestCallThread(getRandomCallDuration());
 			threads[threadIndex].start();
 		}
