@@ -1,7 +1,6 @@
 package ar.com.almundo.callcenter.call;
 
 import ar.com.almundo.callcenter.employees.Employee;
-import ar.com.almundo.callcenter.employees.EmployeePool;
 
 public class Call {
 	
@@ -11,7 +10,12 @@ public class Call {
 		this.employee = employee;
 	}
 	
-	public void end() {
-		EmployeePool.getInstance().addEmployee(employee);
+	public void end() {	
+		this.employee.onCallEnd();
+		this.employee = null;
+	}
+	
+	public Employee getEmployee() {
+		return employee;
 	}
 }
