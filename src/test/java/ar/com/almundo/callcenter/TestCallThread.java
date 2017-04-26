@@ -1,6 +1,7 @@
 package ar.com.almundo.callcenter;
 
 import ar.com.almundo.callcenter.call.Call;
+import ar.com.almundo.callcenter.call.CallHandlingException;
 
 public class TestCallThread extends Thread {
 	
@@ -15,7 +16,12 @@ public class TestCallThread extends Thread {
 
 		final Call call = new Call();
 		
-		Dispatcher.getInstance().dispatchCall(call);
+		try {
+			Dispatcher.getInstance().dispatchCall(call);
+		}
+		catch(CallHandlingException e) {
+			System.out.println("La llamada no pudo ser atendida");
+		}
 		
 		try {
 			Thread.sleep(callDuration);
