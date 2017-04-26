@@ -8,8 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ar.com.almundo.callcenter.call.Call;
+import ar.com.almundo.callcenter.call.CallQueueFullException;
 
 public class EmployeePool {
+	
+	public static final int MAX_QUEUED_CALLS = 10;
 	
 	private static EmployeePool instance = new EmployeePool();
 	
@@ -23,6 +26,15 @@ public class EmployeePool {
 	
 	public void empty() {
 		employees.clear();
+	}
+	
+	public void flushQueuedCalls() {
+		callsOnHold.clear();
+	}
+	
+	public void reset() {
+		empty();
+		flushQueuedCalls();
 	}
 	
 	public void addEmployee(Employee employee) {
@@ -41,6 +53,12 @@ public class EmployeePool {
 	}
 	
 	public void queueCall(Call call) {
+		
+		if(callsOnHold.size() == MAX_QUEUED_CALLS) {
+			System.out.println("Call queue is full, can't handle the call...");
+			
+			throw new CallQueueFullException();
+		}
 		
 		System.out.println("Putting call on hold...");
 		this.callsOnHold.add(call);
