@@ -16,8 +16,11 @@ public class Call {
 	
 	public void end() {	
 		this.endMillis = System.currentTimeMillis();
-		this.employee.onCallEnd();
-		this.employee = null;
+		
+		if(this.employee != null) {
+			this.employee.onCallEnd();
+			this.employee = null;
+		}
 	}
 	
 	public long getDuration() {
