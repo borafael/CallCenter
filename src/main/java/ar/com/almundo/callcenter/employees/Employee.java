@@ -6,6 +6,7 @@ public abstract class Employee {
 	
 	private Long id;
 	private String name;
+	private Call call;
 	
 	public Employee(Long id, String name) {
 		this.id = id;
@@ -16,10 +17,12 @@ public abstract class Employee {
 
 		System.out.println(String.format("%s %s speaking...", getClass().getSimpleName().toLowerCase(), name));
 		call.handle(this);
+		this.call = call;
 	}
 	
 	public void onCallEnd() {
-		System.out.println(String.format("%s %s ending call...", getClass().getSimpleName().toLowerCase(), name));
+		System.out.println(String.format("%s %s left call after %d seconds...", getClass().getSimpleName().toLowerCase(), name, this.call.getDuration() / 1000));
+		this.call = null;
 		EmployeePool.getInstance().addEmployee(this);
 	}
 	
