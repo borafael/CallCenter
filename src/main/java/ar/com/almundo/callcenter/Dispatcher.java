@@ -3,7 +3,6 @@ package ar.com.almundo.callcenter;
 import ar.com.almundo.callcenter.call.Call;
 import ar.com.almundo.callcenter.call.CallEmployeeHandler;
 import ar.com.almundo.callcenter.call.CallHandler;
-import ar.com.almundo.callcenter.call.CallHandlingException;
 import ar.com.almundo.callcenter.call.NoCallHandlerException;
 import ar.com.almundo.callcenter.employees.Director;
 import ar.com.almundo.callcenter.employees.Operator;
@@ -44,7 +43,7 @@ public class Dispatcher {
 				holdHandler.handleCall(call);
 			}
 			else {
-				throw new CallHandlingException(e);
+				throw e;
 			}
 		}
 	}
