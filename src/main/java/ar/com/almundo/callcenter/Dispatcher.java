@@ -11,10 +11,12 @@ import ar.com.almundo.callcenter.employees.Supervisor;
 
 public class Dispatcher {
 	
+	private static Dispatcher instance = new Dispatcher();
+	
 	private CallEmployeeHandler firstCallEmployeeHandler;
 	private CallHandler holdHandler;
 	
-	public Dispatcher() {
+	private Dispatcher() {
 		
 		CallEmployeeHandler operatorCallHandler = new CallEmployeeHandler(Operator.class);
 		CallEmployeeHandler supervisorCallHandler = new CallEmployeeHandler(Supervisor.class);
@@ -25,6 +27,10 @@ public class Dispatcher {
 		
 		this.firstCallEmployeeHandler = operatorCallHandler;
 		this.holdHandler = null;
+	}
+	
+	public static Dispatcher getInstance() {
+		return instance;
 	}
 	
 	public void dispatchCall(Call call) {

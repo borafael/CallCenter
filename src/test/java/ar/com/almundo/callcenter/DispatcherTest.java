@@ -38,6 +38,7 @@ public class DispatcherTest extends TestCase {
 	protected void setUp() throws Exception {
 		
 		EmployeePool.getInstance().empty();
+		Dispatcher.getInstance().setHoldHandler(null);
 
 	}
 
@@ -87,7 +88,7 @@ public class DispatcherTest extends TestCase {
 	public void testNoInactiveEmployees() {
 
 		try {
-			new Dispatcher().dispatchCall(new Call());
+			Dispatcher.getInstance().dispatchCall(new Call());
 			fail();
 		}
 		catch(CallHandlingException e) {}
@@ -97,9 +98,7 @@ public class DispatcherTest extends TestCase {
 		
 		final boolean[] holdHandlerCalled = new boolean[]{false};
 		
-		Dispatcher dispatcher = new Dispatcher();
-		
-		dispatcher.setHoldHandler(new CallHandler() {
+		Dispatcher.getInstance().setHoldHandler(new CallHandler() {
 
 			/*
 			 * (non-Javadoc)
@@ -112,7 +111,7 @@ public class DispatcherTest extends TestCase {
 			}
 		});
 		
-		dispatcher.dispatchCall(new Call());
+		Dispatcher.getInstance().dispatchCall(new Call());
 		
 		assertTrue(holdHandlerCalled[0]);
 	}
@@ -134,7 +133,7 @@ public class DispatcherTest extends TestCase {
 
 			final Call call = new Call();
 			
-			new Dispatcher().dispatchCall(call);
+			Dispatcher.getInstance().dispatchCall(call);
 			
 			try {
 				Thread.sleep(callDuration);
