@@ -1,13 +1,14 @@
 package ar.com.almundo.callcenter;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import ar.com.almundo.callcenter.call.Call;
 import ar.com.almundo.callcenter.call.CallHandler;
 import ar.com.almundo.callcenter.call.CallHandlingException;
 import ar.com.almundo.callcenter.employees.Director;
+import ar.com.almundo.callcenter.employees.Employee;
 import ar.com.almundo.callcenter.employees.EmployeePool;
 import ar.com.almundo.callcenter.employees.Operator;
 import ar.com.almundo.callcenter.employees.Supervisor;
@@ -44,76 +45,43 @@ public class DispatcherTest extends TestCase {
 		return new TestSuite(DispatcherTest.class);
 	}
 
-	public void testSingleCallDispatch() {
+	public void testSingleCallDispatch() throws InterruptedException {
 		
 		EmployeePool.getInstance().addEmployee(new Director(1l, "Vinnie Appice"));
-
-		final Call call = new Call();
-
-		new Dispatcher().dispatchCall(call);
-
-		Timer timer = new Timer();
-
-		timer.schedule(new TimerTask() {
-
-			@Override
-			public void run() {
-
-				call.end();
-			}
-
-		}, 5000);
-
-		try {
-			Thread.sleep(5000);
-		} 
-		catch (InterruptedException ignore) {}
+		
+		Thread thread = new TestCallThread(getRandomCallDuration());
+		thread.start();
+		thread.join();
 	}
 
-	public void testMultipleCallDispatch() {
+	public void testMultipleCallDispatch() throws InterruptedException {
 		
-		EmployeePool.getInstance().addEmployee(new Director(1l, "Vinnie Appice"));
-		EmployeePool.getInstance().addEmployee(new Director(2l, "Tim Robbins"));
-		EmployeePool.getInstance().addEmployee(new Director(3l, "Walter Sidotti"));
-		EmployeePool.getInstance().addEmployee(new Supervisor(4l, "Richard Starkey"));
-		EmployeePool.getInstance().addEmployee(new Supervisor(5l, "Bin Valencia"));
-		EmployeePool.getInstance().addEmployee(new Supervisor(6l, "Keith Moon"));
-		EmployeePool.getInstance().addEmployee(new Operator(7l, "John Dolmayan"));
-		EmployeePool.getInstance().addEmployee(new Operator(8l, "Nick Menza"));
-		EmployeePool.getInstance().addEmployee(new Operator(9l, "Mike Terrana"));
-		EmployeePool.getInstance().addEmployee(new Operator(10l, "Sheila Escobedo"));
-
-		Dispatcher dispatcher = new Dispatcher();
+		List<Employee> employees = new LinkedList<Employee>();
 		
-		int totalDuration = 0;
-
-		for (int i = 0; i < 10; i++) {
-
-			final Call call = new Call();
-			
-			int callDuration = getRandomCallDuration();
-			
-			totalDuration += callDuration;
-
-			dispatcher.dispatchCall(call);
-
-			Timer timer = new Timer();
-
-			timer.schedule(new TimerTask() {
-
-				@Override
-				public void run() {
-
-					call.end();
-				}
-
-			}, callDuration);
+		employees.add(new Director(1l, "Vinnie Appice"));
+		employees.add(new Director(2l, "Tim Robbins"));
+		employees.add(new Director(3l, "Walter Sidotti"));
+		employees.add(new Supervisor(4l, "Richard Starkey"));
+		employees.add(new Supervisor(5l, "Bin Valencia"));
+		employees.add(new Supervisor(6l, "Keith Moon"));
+		employees.add(new Operator(7l, "John Dolmayan"));
+		employees.add(new Operator(8l, "Nick Menza"));
+		employees.add(new Operator(9l, "Mike Terrana"));
+		employees.add(new Operator(10l, "Sheila Escobedo"));
+		
+		for(Employee employee: employees)
+			EmployeePool.getInstance().addEmployee(employee);
+		
+		Thread[] threads = new Thread[employees.size()];
+		
+		for(int threadIndex = 0; threadIndex < 10; threadIndex++) {
+			threads[threadIndex] = new TestCallThread(getRandomCallDuration());
+			threads[threadIndex].start();
 		}
-
-		try {
-			Thread.sleep(totalDuration);
-		} 
-		catch (InterruptedException ignore) {}
+		
+		for(int threadIndex = 0; threadIndex < 10; threadIndex++) {
+			threads[threadIndex].join();
+		}
 	}
 	
 	public void testNoInactiveEmployees() {
@@ -151,5 +119,29 @@ public class DispatcherTest extends TestCase {
 	
 	private int getRandomCallDuration() {
 		return random.nextInt(MAX_CALL_DURATION - MIN_CALL_DURATION) + MIN_CALL_DURATION;
+	}
+	
+	private class TestCallThread extends Thread {
+		
+		private int callDuration;
+		
+		public TestCallThread(int callDuration) {
+			this.callDuration = callDuration;
+		}
+		
+		@Override
+		public void run() {
+
+			final Call call = new Call();
+			
+			new Dispatcher().dispatchCall(call);
+			
+			try {
+				Thread.sleep(callDuration);
+			} 
+			catch (InterruptedException ignore) {}
+			
+			call.end();
+		}
 	}
 }
