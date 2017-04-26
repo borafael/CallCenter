@@ -3,30 +3,51 @@ package ar.com.almundo.callcenter.employees;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import ar.com.almundo.callcenter.call.Call;
 
 public class EmployeePool {
 	
 	private static EmployeePool instance = new EmployeePool();
 	
 	private Map<Class<? extends Employee>, List<Employee>> employees;
+	private Queue<Call> callsOnHold;
 	
 	private EmployeePool() {
 		employees = new ConcurrentHashMap<Class<? extends Employee>, List<Employee>>();
+		callsOnHold = new ConcurrentLinkedQueue<Call>();
 	}
 	
 	public void empty() {
 		employees.clear();
 	}
 	
-	public void addEmployee(Employee employee) {
+	public synchronized void addEmployee(Employee employee) {
 		
-		if(!employees.containsKey(employee.getClass())){
-			
-			employees.put(employee.getClass(), new ArrayList<Employee>());
+		if(!callsOnHold.isEmpty()) {
+			employee.handleCall(callsOnHold.poll());
 		}
+		else {
+			if(!employees.containsKey(employee.getClass())){
+				
+				employees.put(employee.getClass(), new ArrayList<Employee>());
+			}
+			
+			employees.get(employee.getClass()).add(employee);
+		}
+	}
+	
+	public void queueCall(Call call) {
 		
-		employees.get(employee.getClass()).add(employee);
+		System.out.println("Putting call on hold...");
+		this.callsOnHold.add(call);
+	}
+	
+	public int getQueuedCallsCount() {
+		return this.callsOnHold.size();
 	}
 	
 	public static EmployeePool getInstance() {
