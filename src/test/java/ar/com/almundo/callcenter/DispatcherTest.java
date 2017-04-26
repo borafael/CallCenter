@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ar.com.almundo.callcenter.call.Call;
+import ar.com.almundo.callcenter.call.CallHandlingException;
 import ar.com.almundo.callcenter.employees.Director;
 import ar.com.almundo.callcenter.employees.EmployeePool;
 import ar.com.almundo.callcenter.employees.Operator;
@@ -18,11 +19,14 @@ public class DispatcherTest extends TestCase {
 	public static final int MAX_CALL_DURATION = 10000;
 	public static final int MIN_CALL_DURATION = 5000;
 	
+	private Random random;
 
 	public DispatcherTest(String testName) {
 		super(testName);
+		
+		this.random = new Random();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -33,16 +37,6 @@ public class DispatcherTest extends TestCase {
 		
 		EmployeePool.getInstance().empty();
 
-		EmployeePool.getInstance().addEmployee(new Director(1l, "Vinnie Appice"));
-		EmployeePool.getInstance().addEmployee(new Director(2l, "Tim Robbins"));
-		EmployeePool.getInstance().addEmployee(new Director(3l, "Walter Sidotti"));
-		EmployeePool.getInstance().addEmployee(new Supervisor(4l, "Richard Starkey"));
-		EmployeePool.getInstance().addEmployee(new Supervisor(5l, "Bin Valencia"));
-		EmployeePool.getInstance().addEmployee(new Supervisor(6l, "Keith Moon"));
-		EmployeePool.getInstance().addEmployee(new Operator(7l, "John Dolmayan"));
-		EmployeePool.getInstance().addEmployee(new Operator(8l, "Nick Menza"));
-		EmployeePool.getInstance().addEmployee(new Operator(9l, "Mike Terrana"));
-		EmployeePool.getInstance().addEmployee(new Operator(10l, "Sheila Escobedo"));
 	}
 
 	public static Test suite() {
@@ -50,6 +44,8 @@ public class DispatcherTest extends TestCase {
 	}
 
 	public void testSingleCallDispatch() {
+		
+		EmployeePool.getInstance().addEmployee(new Director(1l, "Vinnie Appice"));
 
 		final Call call = new Call();
 
@@ -74,6 +70,17 @@ public class DispatcherTest extends TestCase {
 	}
 
 	public void testMultipleCallDispatch() {
+		
+		EmployeePool.getInstance().addEmployee(new Director(1l, "Vinnie Appice"));
+		EmployeePool.getInstance().addEmployee(new Director(2l, "Tim Robbins"));
+		EmployeePool.getInstance().addEmployee(new Director(3l, "Walter Sidotti"));
+		EmployeePool.getInstance().addEmployee(new Supervisor(4l, "Richard Starkey"));
+		EmployeePool.getInstance().addEmployee(new Supervisor(5l, "Bin Valencia"));
+		EmployeePool.getInstance().addEmployee(new Supervisor(6l, "Keith Moon"));
+		EmployeePool.getInstance().addEmployee(new Operator(7l, "John Dolmayan"));
+		EmployeePool.getInstance().addEmployee(new Operator(8l, "Nick Menza"));
+		EmployeePool.getInstance().addEmployee(new Operator(9l, "Mike Terrana"));
+		EmployeePool.getInstance().addEmployee(new Operator(10l, "Sheila Escobedo"));
 
 		Dispatcher dispatcher = new Dispatcher();
 		
@@ -108,7 +115,16 @@ public class DispatcherTest extends TestCase {
 		catch (InterruptedException ignore) {}
 	}
 	
+	public void testNoInactiveEmployees() {
+
+		try {
+			new Dispatcher().dispatchCall(new Call());
+			fail();
+		}
+		catch(CallHandlingException e) {}
+	}
+	
 	private int getRandomCallDuration() {
-		return new Random().nextInt(MAX_CALL_DURATION - MIN_CALL_DURATION) + MIN_CALL_DURATION;
+		return random.nextInt(MAX_CALL_DURATION - MIN_CALL_DURATION) + MIN_CALL_DURATION;
 	}
 }
