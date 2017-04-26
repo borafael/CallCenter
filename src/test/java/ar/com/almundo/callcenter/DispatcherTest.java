@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ar.com.almundo.callcenter.call.Call;
+import ar.com.almundo.callcenter.call.CallHandler;
 import ar.com.almundo.callcenter.call.CallHandlingException;
 import ar.com.almundo.callcenter.employees.Director;
 import ar.com.almundo.callcenter.employees.EmployeePool;
@@ -122,6 +123,30 @@ public class DispatcherTest extends TestCase {
 			fail();
 		}
 		catch(CallHandlingException e) {}
+	}
+	
+	public void testHoldHandler() {
+		
+		final boolean[] holdHandlerCalled = new boolean[]{false};
+		
+		Dispatcher dispatcher = new Dispatcher();
+		
+		dispatcher.setHoldHandler(new CallHandler() {
+
+			/*
+			 * (non-Javadoc)
+			 * @see ar.com.almundo.callcenter.call.CallHandler#handleCall(ar.com.almundo.callcenter.call.Call)
+			 */
+			@Override
+			public void handleCall(Call call) {
+
+				holdHandlerCalled[0] = true;
+			}
+		});
+		
+		dispatcher.dispatchCall(new Call());
+		
+		assertTrue(holdHandlerCalled[0]);
 	}
 	
 	private int getRandomCallDuration() {
