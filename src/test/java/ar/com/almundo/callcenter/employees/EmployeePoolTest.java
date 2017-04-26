@@ -1,6 +1,7 @@
 package ar.com.almundo.callcenter.employees;
 
 import ar.com.almundo.callcenter.call.Call;
+import ar.com.almundo.callcenter.call.CallQueueFullException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -13,7 +14,7 @@ public class EmployeePoolTest extends TestCase {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		EmployeePool.getInstance().empty();
+		EmployeePool.getInstance().reset();
 	}
 
 	public EmployeePoolTest(String testName) {
@@ -96,5 +97,16 @@ public class EmployeePoolTest extends TestCase {
 		call.end();
 		
 		assertEquals(0, EmployeePool.getInstance().getQueuedCallsCount());
+	}
+	
+	public void testCallQueueCapacity() {
+		
+		try{
+			for(int i = 0; i < EmployeePool.MAX_QUEUED_CALLS + 1; i++)
+				EmployeePool.getInstance().queueCall(new Call());
+			
+			fail();
+		}
+		catch(CallQueueFullException e) {}
 	}
 }
