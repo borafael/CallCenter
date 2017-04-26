@@ -25,7 +25,7 @@ public class EmployeePool {
 		employees.clear();
 	}
 	
-	public synchronized void addEmployee(Employee employee) {
+	public void addEmployee(Employee employee) {
 		
 		if(!callsOnHold.isEmpty()) {
 			employee.handleCall(callsOnHold.poll());
