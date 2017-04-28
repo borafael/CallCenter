@@ -10,6 +10,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import ar.com.almundo.callcenter.call.Call;
 import ar.com.almundo.callcenter.call.CallQueueFullException;
 
+/**
+ * Implementación de de singleton con el objetivo de administrar empleados disponibles y llamadas en espera
+ * @author rafael
+ *
+ */
 public class EmployeePool {
 	
 	public static final int MAX_QUEUED_CALLS = 10;
@@ -37,6 +42,11 @@ public class EmployeePool {
 		flushQueuedCalls();
 	}
 	
+	/**
+	 * Agrega un empleado al pool de empleados disponibles para atender una llamada (a menos que haya una llamada en espera, en cuyo
+	 * caso el empleado agregado directamente es convocado para atender la llamada)
+	 * @param employee
+	 */
 	public void addEmployee(Employee employee) {
 		
 		if(!callsOnHold.isEmpty()) {
@@ -52,6 +62,10 @@ public class EmployeePool {
 		}
 	}
 	
+	/**
+	 * Encola una llamada en espera para que sea atendida por el próximo empleado en ser agregado al pool
+	 * @param call
+	 */
 	public void queueCall(Call call) {
 		
 		if(callsOnHold.size() == MAX_QUEUED_CALLS) {
@@ -72,6 +86,11 @@ public class EmployeePool {
 		return instance;
 	}
 	
+	/**
+	 * Devuelve un empleado libre de la clase correspondiente
+	 * @param clase del empleado
+	 * @return empleado
+	 */
 	public Employee getEmployee(Class<? extends Employee> employeeClass) {
 		
 		Employee employee = null;
@@ -84,6 +103,11 @@ public class EmployeePool {
 		return employee;
 	}
 	
+	/**
+	 * Devuelve todos los empleados de la clase correspondiente
+	 * @param clase de los empleados
+	 * @return empleados
+	 */
 	public List<Employee> getEmployees(Class<? extends Employee> employeeClass) {
 		
 		List<Employee> employees = new ArrayList<Employee>();
