@@ -8,6 +8,12 @@ import ar.com.almundo.callcenter.employees.Director;
 import ar.com.almundo.callcenter.employees.Operator;
 import ar.com.almundo.callcenter.employees.Supervisor;
 
+/**
+ * Singleton, responsable de que las llamadas que reciba el método dispatchCall sean manejadas por los empledaos disponibles de acuerdo
+ * a las reglas existentes
+ * @author rafael
+ *
+ */
 public class Dispatcher {
 	
 	private static Dispatcher instance = new Dispatcher();
@@ -32,6 +38,7 @@ public class Dispatcher {
 		return instance;
 	}
 	
+	
 	public void dispatchCall(Call call) {
 		
 		try {
@@ -52,6 +59,11 @@ public class Dispatcher {
 		return holdHandler;
 	}
 
+	/**
+	 * Establece un handler para el evento representado por el caso en el que no haya ningún handler ue pueda atender la llamada y se
+	 * llegue al final del chain of responsibilities
+	 * @param handler
+	 */
 	public void setHoldHandler(CallHandler holdHandler) {
 		this.holdHandler = holdHandler;
 	}
