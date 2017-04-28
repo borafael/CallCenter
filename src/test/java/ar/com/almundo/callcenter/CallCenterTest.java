@@ -88,7 +88,7 @@ public class CallCenterTest extends TestCase {
 			threads.add(thread);
 			thread.start();
 			
-			threads.add(thread);
+//			threads.add(thread);
 			
 			try {
 				Thread.sleep(getRandomTimeBetweenCalls());
